@@ -1,0 +1,3 @@
+name: LCBungeeCore
+version: '${version}'
+main: lc.bungeecore.LCBungeeCore
