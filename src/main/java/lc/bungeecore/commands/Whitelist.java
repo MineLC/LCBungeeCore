@@ -21,7 +21,7 @@ public class Whitelist extends Command implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(sender instanceof ProxiedPlayer && !Jugador.getJugador((ProxiedPlayer) sender).isAdmin()){
-            sender.sendMessage(LCBungeeCore.get().getMessagebyString("message.nopermission"));
+            Util.sendMessage(sender, LCBungeeCore.prefix+"&c¡No tienes permisos!");
             return;
         }
         if(args.length == 0){

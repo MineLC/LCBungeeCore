@@ -1,5 +1,6 @@
 package lc.bungeecore;
 
+import lc.bungeecore.commands.Whitelist;
 import lc.bungeecore.configuration.LCConfig;
 import lc.bungeecore.entidades.Database;
 import lc.bungeecore.listener.PlayerListener;
@@ -19,7 +20,6 @@ public final class LCBungeeCore extends Plugin {
     public static LCConfig databaseConfig;
     public static LCConfig whitelistConfig;
     public static boolean selfCrashing = false;
-    public static LCConfig messagesConfig;
 
     @Override
     public void onLoad() {
@@ -30,7 +30,6 @@ public final class LCBungeeCore extends Plugin {
     public void onEnable() {
         databaseConfig = new LCConfig("database", this);
         whitelistConfig = new LCConfig("whitelist", this);
-        messagesConfig = new LCConfig("messages.yml", this);
         Database.loadDatabaseConfig(databaseConfig.getConfig());
 
         try {
@@ -45,6 +44,7 @@ public final class LCBungeeCore extends Plugin {
         Util.console("&a[BungeeCore] ¡Conexión realizada con la base de datos!");
         checkearConexion();
         getProxy().getPluginManager().registerListener(this, new PlayerListener());
+        getProxy().getPluginManager().registerCommand(this, new Whitelist());
     }
 
     @Override
@@ -59,9 +59,5 @@ public final class LCBungeeCore extends Plugin {
 
     public static LCBungeeCore get() {
         return instance;
-    }
-
-    public String getMessagebyString(String s) {
-        return messagesConfig.getConfig().getString(s);
     }
 }

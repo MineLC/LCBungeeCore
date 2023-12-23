@@ -37,7 +37,7 @@ public class LCConfig {
         File file = new File(plugin.getDataFolder(), getName()+".yml");
         if (!file.exists())
             try (InputStream in = plugin.getResourceAsStream(getName()+".yml")) {
-                Files.copy(in, file.toPath(), new CopyOption[0]);
+                Files.copy(in, file.toPath());
                 this.configurationConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), getName()+".yml"));
             } catch (IOException e) {
                 e.printStackTrace();
