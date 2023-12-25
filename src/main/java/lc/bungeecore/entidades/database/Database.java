@@ -1,13 +1,12 @@
-package lc.bungeecore.entidades;
+package lc.bungeecore.entidades.database;
 
-import lc.bungeecore.LCBungeeCore;
 import lc.bungeecore.utilidades.Util;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
+import java.util.LinkedHashMap;
 
 public class Database {
 
@@ -17,7 +16,7 @@ public class Database {
     private static String usuario;
     private static String contrasenia;
 
-    private static Connection connection = null;
+    public static Connection connection = null;
 
     public static void loadDatabaseConfig(Configuration c){
         ip = c.getString("MySQL.Address");
@@ -51,7 +50,7 @@ public class Database {
         String update_SkyWars = "CREATE TABLE IF NOT EXISTS SV_SKYWARS (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `stats_partidas_jugadas` INTEGER, `stats_partidas_ganadas` INTEGER, `Kit` VARCHAR(16), `glasscolor` VARCHAR(16), `traileffect` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_PVPGames = "CREATE TABLE IF NOT EXISTS SV_PVPGAMES (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `stats_partidas_jugadas` INTEGER, `stats_partidas_ganadas` INTEGER, `stats_monuments_destroyed` INTEGER, `stats_wools_placed` INTEGER, `stats_cores_leakeds` INTEGER, `Kit` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_bedwars = "CREATE TABLE IF NOT EXISTS SV_BEDWARS (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `stats_partidas_jugadas` INTEGER, `stats_partidas_ganadas` INTEGER, `Kit` VARCHAR(16), `glasscolor` VARCHAR(16), `traileffect` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
-        String update_chg = "CREATE TABLE IF NOT EXISTS SV_CHG (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `stats_partidas_jugadas` INTEGER, `stats_partidas_ganadas` INTEGER, `Kit` VARCHAR(16), `placecolor` VARCHAR(16), `traileffect` VARCHAR(16), `winner` BOOLEAN, PRIMARY KEY (`ID`), KEY (`Player`))";
+        String update_chg = "CREATE TABLE IF NOT EXISTS CHGInfo (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `kills` INTEGER, `racha` INTEGER, `jugadas` INTEGER, `ganadas` INTEGER, `fama` INTEGER, `kit` VARCHAR(16), `rango` VARCHAR(16), `winner` BOOLEAN, PRIMARY KEY (`ID`), KEY (`Player`))";
 
         Statement update = connection.createStatement();
         update.execute(update_info);
@@ -88,58 +87,8 @@ public class Database {
         }
     }
 
-    public static void load_PlayerRankInfo_ASYNC(Jugador jugador) {
-        ProxyServer.getInstance().getScheduler().runAsync(LCBungeeCore.get(), () ->{
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            try {
-                String queryBuilder = "SELECT * FROM `RangoInfo` WHERE `Player` = ?;";
-                preparedStatement = connection.prepareStatement(queryBuilder);
-                preparedStatement.setString(1, jugador.getNombre());
-                resultSet = preparedStatement.executeQuery();
 
-                if (resultSet != null && resultSet.next()) {
-                    jugador.setRankInfo(new RangoInfo(
-                            Rango.valueOf(resultSet.getString("Rank")),
-                                    resultSet.getLong("Duration"),
-                                    resultSet.getBoolean("HideRank"),
-                                    resultSet.getInt("Puntos"),
-                                    resultSet.getString("NameColor")));
-                }else{
-                    createPlayerRankInfo(jugador);
-                }
-            } catch (SQLException Exception) {
-                Util.console("&c[Core] Excepcion cargando PlayerRankInfo de "+jugador.getNombre()+". (ASYNC)");
-            } finally {
-                close(resultSet);
-                close(preparedStatement);
-            }
-
-
-        });
-    }
-
-    private static void createPlayerRankInfo(Jugador jugador) {
-        PreparedStatement statement = null;
-        try {
-            String queryBuilder = "INSERT INTO `RangoInfo` (`Player`, `Rank`, `Puntos`, `Duration`, `NameColor`, `HideRank`) VALUES (?, ?, ?, ?, ?, ?);";
-            statement = connection.prepareStatement(queryBuilder);
-            statement.setString(1, jugador.getNombre());
-            statement.setString(2, Rango.DEFAULT.name().toUpperCase());
-            statement.setInt(3, 0);
-            statement.setLong(4, 0);
-            statement.setString(5, "&7");
-            statement.setBoolean(6, false);
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            Util.console("&c[Core] Excepcion creando PlayerRankInfo de "+jugador.getNombre()+".");
-        }finally {
-            close(statement);
-        }
-    }
-
-    private static void close(ResultSet resultSet) {
+    public static void close(ResultSet resultSet) {
         if (resultSet != null) {
             try {
                 resultSet.close();
@@ -149,7 +98,7 @@ public class Database {
         }
     }
 
-    private static void close(PreparedStatement preparedStatement) {
+    public static void close(PreparedStatement preparedStatement) {
         if (preparedStatement != null) {
             try {
                 preparedStatement.close();
@@ -161,46 +110,35 @@ public class Database {
         }
     }
 
-    public static void load_PlayerCoins_ASYNC(Jugador jugador) {
-        ProxyServer.getInstance().getScheduler().runAsync(LCBungeeCore.get(), () ->{
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            try {
-                String queryBuilder = "SELECT * FROM `LCoins` WHERE `Player` = ?;";
-                preparedStatement = connection.prepareStatement(queryBuilder);
-                preparedStatement.setString(1, jugador.getNombre());
-                resultSet = preparedStatement.executeQuery();
-
-                if (resultSet != null && resultSet.next()) {
-                    jugador.setCoins(resultSet.getInt("LCoins"));
-                }else{
-                    createPlayerCoins(jugador);
-                }
-            } catch (SQLException Exception) {
-                Util.console("&c[Core] Excepcion cargando PlayerRankInfo de "+jugador.getNombre()+". (ASYNC)");
-            } finally {
-                close(resultSet);
-                close(preparedStatement);
-            }
 
 
-        });
-    }
+    public static LinkedHashMap<String, Integer> getTop(int limit, String toptype, String table) {
+        LinkedHashMap<String, Integer> topScore = new LinkedHashMap<String, Integer>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
-    private static void createPlayerCoins(Jugador jugador) {
-        PreparedStatement statement = null;
         try {
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append("SELECT ");
+            queryBuilder.append("`Player`, "+toptype+" ");
+            queryBuilder.append("FROM ");
+            queryBuilder.append("`"+table+"` ");
+            queryBuilder.append("ORDER BY "+toptype+" DESC LIMIT ?;");
 
-            String queryBuilder = "INSERT INTO `LCoins` (`Player`, `LCoins`) VALUES (?, ?);";
-            statement = connection.prepareStatement(queryBuilder);
-            statement.setString(1, jugador.getNombre());
-            statement.setInt(2, 100);
+            preparedStatement = connection.prepareStatement(queryBuilder.toString());
+            preparedStatement.setInt(1, limit);
+            resultSet = preparedStatement.executeQuery();
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            Util.console("&c[Core] Excepcion creando PlayerCoins de "+jugador.getNombre()+".");
-        }finally {
-            close(statement);
+            while (resultSet != null && resultSet.next()) {
+                topScore.put(resultSet.getString("Player"), resultSet.getInt(toptype));
+            }
+        } catch (final Exception Exception) {
+            Exception.printStackTrace();
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
         }
+
+        return topScore;
     }
 }

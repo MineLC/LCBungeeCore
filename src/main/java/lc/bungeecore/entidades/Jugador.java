@@ -1,5 +1,6 @@
 package lc.bungeecore.entidades;
 
+import lc.bungeecore.entidades.minijuegos.CHGInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashMap;
@@ -11,9 +12,11 @@ public class Jugador {
 
     private final String nombre;
     private UUID uuid;
-    private ProxiedPlayer bungeecordInstance;
+    private ProxiedPlayer player;
     private int coins;
     private RangoInfo rankInfo;
+    private CHGInfo chgInfo;
+
     public static Jugador getJugador(String nombre){
         if(jugadores.containsKey(nombre)) return jugadores.get(nombre);
         Jugador j = new Jugador(nombre);
@@ -21,38 +24,42 @@ public class Jugador {
         return j;
     }
 
+    public void setChgInfo(CHGInfo chgInfo) {
+        this.chgInfo = chgInfo;
+    }
+
     public static Jugador getJugador(ProxiedPlayer player){
-        String nombre = player.getName();
-        if(jugadores.containsKey(nombre)) return jugadores.get(nombre);
-        Jugador j = new Jugador(player);
-        jugadores.put(nombre, j);
-        return j;
+        return getJugador(player.getName());
+    }
+
+    public CHGInfo getChgInfo() {
+        return chgInfo;
     }
 
     private Jugador(String nombre){
         this.nombre = nombre;
     }
 
-    private Jugador(ProxiedPlayer bungeecordInstance){
-        setBungeecordInstance(bungeecordInstance);
-        this.nombre = bungeecordInstance.getName();
-        setUuid(bungeecordInstance.getUniqueId());
+    private Jugador(ProxiedPlayer player){
+        setPlayer(player);
+        this.nombre = player.getName();
+        setUuid(player.getUniqueId());
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public ProxiedPlayer getBungeecordInstance() {
-        return bungeecordInstance;
+    public ProxiedPlayer getPlayer() {
+        return player;
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public void setBungeecordInstance(ProxiedPlayer bungeecordInstance) {
-        this.bungeecordInstance = bungeecordInstance;
+    public void setPlayer(ProxiedPlayer player) {
+        this.player = player;
     }
 
     public void setUuid(UUID uuid) {
@@ -70,6 +77,7 @@ public class Jugador {
     public int getCoins() {
         return coins;
     }
+
     public void setCoins(int coins) {
         this.coins = coins;
     }
@@ -106,6 +114,11 @@ public class Jugador {
 
     public boolean isYoutuber(){
         return getRankInfo().getRango().equals(Rango.YOUTUBER);
+    }
+
+    public boolean isCreadorDeContenido(){
+        Rango r = getRankInfo().getRango();
+        return r == Rango.YOUTUBER || r == Rango.STREAMER || r == Rango.MINIYT;
     }
 
     public boolean isStreamer(){

@@ -2,7 +2,7 @@ package lc.bungeecore;
 
 import lc.bungeecore.commands.Whitelist;
 import lc.bungeecore.configuration.LCConfig;
-import lc.bungeecore.entidades.Database;
+import lc.bungeecore.entidades.database.Database;
 import lc.bungeecore.listener.PlayerListener;
 import lc.bungeecore.utilidades.Util;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class LCBungeeCore extends Plugin {
 
-    public static String prefix = Util.color("&b&lMINE&6&lLC &r");
+    public static String prefix = Util.color("&b&lMine&6&lLC &r");
     public static List<String> whitelistPlayers;
     public static boolean whitelist;
     private static LCBungeeCore instance;

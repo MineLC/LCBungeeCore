@@ -17,7 +17,6 @@ public class Whitelist extends Command implements TabExecutor {
         super("whitelist", null, "wl");
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(sender instanceof ProxiedPlayer && !Jugador.getJugador((ProxiedPlayer) sender).isAdmin()){
