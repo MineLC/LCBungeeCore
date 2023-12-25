@@ -17,6 +17,11 @@ dependencies {
 
 }
 
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
 def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
