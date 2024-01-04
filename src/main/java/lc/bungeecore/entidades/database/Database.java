@@ -42,7 +42,7 @@ public class Database {
     private static void crearTablas() throws SQLException {
         String update_info = "CREATE TABLE IF NOT EXISTS PlayerInfo (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `FirstSeen` DATETIME, `LastSeen` DATETIME, `Premium` BOOLEAN, `PremiumVerify` BOOLEAN, `LastIP` VARCHAR(16), `Skin` VARCHAR(24), `TimePlayed` INTEGER, PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_coins = "CREATE TABLE IF NOT EXISTS LCoins (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `LCoins` INTEGER, PRIMARY KEY (`ID`), KEY (`Player`))";
-        String update_rankInfo = "CREATE TABLE IF NOT EXISTS RangoInfo (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `Rank` VARCHAR(24), `Puntos` INTEGER, `Duration` BIGINT, `NameColor` VARCHAR(2), `hideRank` BOOLEAN, PRIMARY KEY (`ID`), KEY (`Player`))";
+        String update_vippoints = "CREATE TABLE IF NOT EXISTS VipPoints (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `VipPoints` INTEGER, PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_lobbyOpciones = "CREATE TABLE IF NOT EXISTS Opciones_SVS (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `opc_enablePlayers` BOOLEAN, `opc_enableChat` BOOLEAN, `opc_enableStacker` BOOLEAN, `opc_glassColor` INTEGER, `opc_Effect` VARCHAR(16), `opc_arrowEffect` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_HG = "CREATE TABLE IF NOT EXISTS SV_HG (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `stats_partidas_jugadas` INTEGER, `stats_partidas_ganadas` INTEGER, `Kit` VARCHAR(16), `placecolor` VARCHAR(16), `traileffect` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
         String update_KitPVP = "CREATE TABLE IF NOT EXISTS SV_KITPVP (`ID` INTEGER AUTO_INCREMENT UNIQUE, `Player` VARCHAR(24) UNIQUE, `stats_kills` INTEGER, `stats_deaths` INTEGER, `stats_topkillstreak` INTEGER, `stats_level` INTEGER, `Kit` VARCHAR(16), PRIMARY KEY (`ID`), KEY (`Player`))";
@@ -61,7 +61,7 @@ public class Database {
         update.execute(update_KitPVP);
         update.execute(update_lobbyOpciones);
         update.execute(update_PotPVP);
-        update.execute(update_rankInfo);
+        update.execute(update_vippoints);
         update.execute(update_SkyWars);
         update.execute(update_PVPGames);
         update.close();

@@ -20,11 +20,6 @@ public class Util {
         sendMessage(ProxyServer.getInstance().getConsole(), message);
     }
 
-    public static String setPlaceholder(Jugador jugador, String string){
-        return string.replaceAll("%prefix%", jugador.getRankInfo()
-                .getRango().getAsPrefix()).replaceAll("%name%", jugador.getNombre());
-    }
-
     public static void kick(ProxiedPlayer player, KickType kickType, CommandSender kicker, String... lines){
         player.disconnect(getKickMessage(kickType, kicker, lines));
     }

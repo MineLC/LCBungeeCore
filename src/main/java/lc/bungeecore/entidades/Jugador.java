@@ -14,7 +14,8 @@ public class Jugador {
     private UUID uuid;
     private ProxiedPlayer player;
     private int coins;
-    private RangoInfo rankInfo;
+    private int vippoints;
+
     private CHGInfo chgInfo;
 
     public static Jugador getJugador(String nombre){
@@ -46,6 +47,14 @@ public class Jugador {
         setUuid(player.getUniqueId());
     }
 
+    public void setVippoints(int vippoints) {
+        this.vippoints = vippoints;
+    }
+
+    public int getVippoints() {
+        return vippoints;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -66,14 +75,6 @@ public class Jugador {
         this.uuid = uuid;
     }
 
-    public RangoInfo getRankInfo() {
-        return rankInfo;
-    }
-
-    public void setRankInfo(RangoInfo rankInfo) {
-        this.rankInfo = rankInfo;
-    }
-
     public int getCoins() {
         return coins;
     }
@@ -83,50 +84,59 @@ public class Jugador {
     }
 
     public boolean noTieneRango(){
-        return getRankInfo().getRango().equals(Rango.DEFAULT);
+        return player.hasPermission("DEFAULT");
     }
 
     public boolean isVIP(){
-        return getRankInfo().getRango().equals(Rango.VIP) || isSVIP();
+        return player.hasPermission("VIP") || isSVIP();
     }
     public boolean isSVIP(){
-        return getRankInfo().getRango().equals(Rango.SVIP) || isELITE();
+
+        return player.hasPermission("SVIP") || isELITE();
     }
 
     public boolean isELITE(){
-        return getRankInfo().getRango().equals(Rango.ELITE) || isRUBY();
+
+        return player.hasPermission("ELITE") || isRUBY();
     }
     public boolean isRUBY(){
-        return getRankInfo().getRango().equals(Rango.RUBY) || isHelper();
+
+        return player.hasPermission("RUBY") || isHelper();
     }
 
     public boolean isHelper(){
-        return getRankInfo().getRango().equals(Rango.HELPER) || isModerador();
+
+        return player.hasPermission("HELPER") || isModerador();
     }
 
     public boolean isModerador(){
-        return getRankInfo().getRango().equals(Rango.MOD) || isAdmin();
+
+        return player.hasPermission("MOD") || isAdmin();
     }
 
     public boolean isMiniYT(){
-        return getRankInfo().getRango().equals(Rango.MINIYT);
+
+        return player.hasPermission("MINIYT");
     }
 
     public boolean isYoutuber(){
-        return getRankInfo().getRango().equals(Rango.YOUTUBER);
+
+        return player.hasPermission("YOUTUBER");
     }
 
     public boolean isCreadorDeContenido(){
-        Rango r = getRankInfo().getRango();
-        return r == Rango.YOUTUBER || r == Rango.STREAMER || r == Rango.MINIYT;
+
+        return player.hasPermission("YOUTUBER") || player.hasPermission("STREAMER") || player.hasPermission("MINIYT");
     }
 
     public boolean isStreamer(){
-        return getRankInfo().getRango().equals(Rango.STREAMER);
+
+        return player.hasPermission("STREAMER");
     }
 
     public boolean isAdmin(){
-        return getRankInfo().getRango().equals(Rango.ADMIN) ||
-                getRankInfo().getRango().equals(Rango.OWNER);
+
+        return player.hasPermission("ADMIN") ||
+                player.hasPermission("OWNER");
     }
 }
