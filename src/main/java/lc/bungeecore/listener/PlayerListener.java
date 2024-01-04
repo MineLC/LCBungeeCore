@@ -2,9 +2,8 @@ package lc.bungeecore.listener;
 
 import lc.bungeecore.LCBungeeCore;
 import lc.bungeecore.entidades.Jugador;
-import lc.bungeecore.entidades.database.Database;
 import lc.bungeecore.entidades.database.LCoinsQuery;
-import lc.bungeecore.entidades.database.RankInfoQuery;
+import lc.bungeecore.entidades.database.VipPointsQuery;
 import lc.bungeecore.utilidades.KickType;
 import lc.bungeecore.utilidades.Util;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -26,7 +25,7 @@ public class PlayerListener implements Listener {
             }
         }
         Jugador jugador = Jugador.getJugador(name);
-        RankInfoQuery.load_PlayerRankInfo_ASYNC(jugador);
+        VipPointsQuery.load_PlayerVipPoints_ASYNC(jugador);
         LCoinsQuery.load_PlayerCoins_ASYNC(jugador);
     }
 
